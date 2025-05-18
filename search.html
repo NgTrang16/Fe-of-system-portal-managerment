@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="assets/css/search.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+    <div id="main" class="container-fluid">
+        <div id="header" class="row row1" style="height:150px ">
+            <div class="col-sm-2 logo-header" style="background-color:#2e43d1;">
+                <img src="https://geology.hus.vnu.edu.vn/wp-content/uploads/2020/03/Logo-HUS_Final-01.png"
+                    alt="HUS Logo" " />
+            </div>
+
+            <div class=" col-sm-5 left-header" style="background-color:rgb(226, 235, 237);margin-left: -10px">
+                <div class="header-title" style="color:  #222d94">
+                    <h3>
+
+                        CỔNG THÔNG TIN ĐÀO TẠO
+                    </h3>
+                    <h4>
+                        DÀNH CHO <span>
+                            GIẢNG VIÊN
+                        </span>
+                    </h4>
+                </div>
+            </div>
+            <div class="container-fluid col-sm-5 right-header" style="background-color:rgb(226, 235, 237);padding:0;">
+                <div class="row row3">
+                    <div class=" col-sm-9 headerWelcome">
+                        Xin chào bạn:
+                        <br>
+                        <br>
+                        Chọn học kỳ:
+                        <select id="cboTerm" name="cboTerm"
+                            style="background-color:#b8c4e3;padding:0px 5px;width:190px;clear:both">
+                            <option value="242;2;2024-2025">
+                                Mã HK 242 - Học kỳ 2 năm 2024-2025
+                            </option>
+                            <option value="241;1;2024-2025">
+                                Mã HK 241 - Học kỳ 1 năm 2024-2025
+                            </option>
+                        </select>
+                    </div>
+                    <div class=" col-sm-3 avatar-container" id="avatarToggle">
+                        <!-- Ảnh avatar -->
+                        <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="Avatar" class="avatar" />
+                        <!-- Menu dropdown (nội dung thay đổi bằng JS) -->
+                        <div class="dropdown" id="dropdownMenu"></div>
+                    </div>
+                </div>
+            </div>
+            <div style="background-color: red;width: 100px;width: 100px; margin-left: auto; padding-right: 0;">
+            </div>
+        </div>
+
+    </div>
+    </div>
+    <div id="divMain" class="row row2">
+        <div class="col-sm-2 sidebar" style="background-color:#2e43d1;">
+            <ul>
+                <li style="margin-top: 27px"><a href="home.html">Trang chủ</a></li>
+                <li><a href="profile.html">Hồ sơ</a></li>
+                <li><a href="search.html">Tìm kiếm</a></li>
+                <li><a href="">Giảng dạy</a></li>
+                <li><a href="">Thống kê</a></li>
+            </ul>
+
+        </div>
+        <div class="col-sm-10 content" style="background-color:rgb(252, 252, 252);">
+            <div id="modTitle" class="module-title" style="height:25px;margin-left:-15px;">Tìm kiếm</div>
+
+            <div class="search-container" style="height: 5% ; margin-bottom: 50px;">
+                <input type="text" id="searchCode" placeholder="Tìm kiếm...">
+                <button onclick = "searchCourse()" class = "search-button" >Tìm kiếm</button>
+            </div>
+            <!-- <div class="search-container">
+                <input type="text" id="searchCode" " placeholder="Tìm kiếm...">
+                <button class="search-button">Tìm</button>
+              </div> -->
+            
+
+            <div class="content" style="height: ; background-color: rgb(252, 249, 249);margin-left: 0;">
+                <table id = "courseTable" style="border:1"; width="100%">
+                    <caption style="text-align: center; font-size:23px; color: black ;font-family :  Helvetica; ">Thông tin môn học</caption>
+                    <thead style="color: black;">
+                        <tr>
+                            <th>STT</th>
+                            <th>Mã học phần</th>
+                            <th>Tên học phần</th>
+                            <th>Số tín chỉ</th>
+                            <th>Khoá</th>
+                            <th>Thứ </th>
+                            <th>Tiết</th>
+                            <th>Số lượng sinh viên</th>
+                            <th>Giảng đường</th>
+                            <th>Ngôn ngữ giảng dạy</th>
+                            <th>Giảng viên</th>
+                        </tr>
+                    </thead>
+                    <tbody style="color:#4f535a ;">
+                        <tr>
+                            <td>1</td>
+                            <td>HUS1011</td>
+                            <td>Tin học cơ sở</td>
+                            <td>3</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        
+                    </tbody>
+                </table>
+                
+                <p id="result"></p>
+            </div>
+
+        </div>
+    </div>
+    </div>
+    <script>
+        function searchCourse() {
+          const inputCode = document.getElementById('searchCode').value.trim().toUpperCase();
+          const table = document.getElementById('courseTable');
+          const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+          let found = false;
+        
+          for (let i = 0; i < rows.length; i++) {
+            const codeCell = rows[i].getElementsByTagName('td')[1];
+            if (codeCell && codeCell.innerText.trim().toUpperCase() === inputCode) {
+              rows[i].style.backgroundColor = '#c8e6c9'; // tô màu nếu tìm thấy
+              document.getElementById('result').innerText = 'Đã tìm thấy học phần: ' + rows[i].innerText;
+              found = true;
+            } else {
+              rows[i].style.backgroundColor = ''; // bỏ màu nếu không khớp
+            }
+          }
+        
+          if (!found) {
+            document.getElementById('result').innerText = 'Không tìm thấy học phần có mã: ' + inputCode;
+          }
+        }
+        </script>
+</body>
+
+</html>

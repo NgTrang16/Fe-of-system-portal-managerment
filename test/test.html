@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>Thống kê giờ giảng dạy</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-light p-4">
+  <div class="container">
+    <h3 class="mb-4 text-center">📊 Thống kê số giờ giảng dạy theo môn học</h3>
+
+    <!-- Bảng thống kê -->
+    <div class="card mb-4">
+      <div class="card-header bg-primary text-white">Danh sách môn học được phân công</div>
+      <div class="card-body p-0">
+        <table class="table table-striped mb-0" id="courseTable">
+          <thead class="table-light">
+            <tr>
+              <th>Mã môn</th>
+              <th>Tên môn học</th>
+              <th>Số tín chỉ</th>
+              <th>Giờ phải dạy</th>
+              <th>Giờ đã dạy</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Sẽ được tạo bằng JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Biểu đồ -->
+    <div>
+      <canvas id="barChart"></canvas>
+    </div>
+  </div>
+
+  <script>
+    // Danh sách môn học được phân công
+    const courseSchedule = [
+      { courseId: "IT101", courseName: "Lập trình C", credit: 3, totalHours: 45 },
+      { courseId: "IT202", courseName: "Lập trình Java", credit: 3, totalHours: 60 },
+      { courseId: "IT303", courseName: "Cơ sở dữ liệu", credit: 2, totalHours: 30 },
+    ];
+
+    // Danh sách buổi dạy của giảng viên
+    const teachingSessions = [
+      { courseId: "IT101", date: "2025-05-10", hours: 2, status: "completed" },
+      { courseId: "IT101", date: "2025-05-12", hours: 3, status: "completed" },
+      { courseId: "IT202", date: "2025-05-11", hours: 2, status: "pending" },
+      { courseId: "IT202", date: "2025-05-15", hours: 4, status: "completed" },
+      { courseId: "IT303", date: "2025-05-09", hours: 3, status: "completed" },
+    ];
+
+    // Hàm tính tổng giờ đã dạy theo mã môn học
+    function calculateHoursCompleted(courseId) {
+      return teachingSessions
+        .filter(session => session.courseId === courseId && session.status === "completed")
+        .reduce((sum, session) => sum + session.hours, 0);
+    }
+
+    // Tạo bảng thống kê
+    const tbody = document.querySelector("#courseTable tbody");
+    courseSchedule.forEach(course => {
+      const completedHours = calculateHoursCompleted(course.courseId);
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${course.courseId}</td>
+        <td>${course.courseName}</td>
+        <td>${course.credit}</td>
+        <td>${course.totalHours}</td>
+        <td>${completedHours}</td>
+      `;
+      tbody.appendChild(row);
+    });
+
+    // Dữ liệu cho biểu đồ
+    const labels = courseSchedule.map(c => c.courseName);
+    const totalHours = courseSchedule.map(c => c.totalHours);
+    const completedHours = courseSchedule.map(c => calculateHoursCompleted(c.courseId));
+
+    // Vẽ biểu đồ cột
+    new Chart(document.getElementById("barChart"), {
+      type: "bar",
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: "Giờ phải dạy",
+            data: totalHours,
+            backgroundColor: "#4e73df",
+          },
+          {
+            label: "Giờ đã dạy",
+            data: completedHours,
+            backgroundColor: "#1cc88a",
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          title: {
+            display: true,
+            text: "Biểu đồ so sánh: Giờ phải dạy vs Giờ đã dạy"
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: 'Số giờ'
+            }
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
